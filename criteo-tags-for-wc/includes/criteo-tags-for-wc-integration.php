@@ -12,14 +12,14 @@ class Criteo_Tags_Integration extends WC_Integration {
 	public function __construct() {
 		global $woocommerce;
 		$this->id                 = 'criteo-tags-for-wc';
-		$this->method_title       = __( 'Integration Demo', 'criteo-tags-for-wc' );
+		$this->method_title       = __( 'Criteo Tracking', 'criteo-tags-for-wc' );
 		$this->method_description = __( 'Add criteo tag script to WooCommerce.', 'criteo-tags-for-wc' );
 		// Load the settings.
 		$this->init_form_fields();
 		$this->init_settings();
 		// Define user set variables.
 		$this->criteo_account          = $this->get_option( 'criteo_account' );
-		$this->debug            = $this->get_option( 'product_identifier' );
+		$this->product_identifier      = $this->get_option( 'product_identifier' );
 		// Actions.
 		add_action( 'woocommerce_update_options_integration_' .  $this->id, array( $this, 'process_admin_options' ) );
 	}
@@ -35,7 +35,7 @@ class Criteo_Tags_Integration extends WC_Integration {
 				'desc_tip'          => true,
 				'default'           => ''
 			),
-			'debug' => array(
+			'product_identifier' => array(
 				'title'             => __( 'product_identifier', 'criteo-tags-for-wc' ),
 				'type'              => 'select',
 				'label'             => __( 'Select which is used for Unique Product IDs', 'criteo-tags-for-wc' ),

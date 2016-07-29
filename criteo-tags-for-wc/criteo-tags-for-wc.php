@@ -41,23 +41,25 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 		/**
 		* Initialize the plugin.
 		*/
-		public function init() {
-			// Checks if WooCommerce is installed.
-			if ( class_exists( 'WC_Integration' ) ) {
-				// Include our integration class.
-				include_once 'criteo-tags-for-wc-integration.php';
-				// Register the integration.
-				add_filter( 'woocommerce_integrations', array( $this, 'add_integration' ) );
-			} else {
-				// throw an admin error if you like
+		function include_criteo_script() {
+			require_once plugin_dir_path( __FILE__ ) . 'includes/criteo-tags-for-wc-script.php';
+			add_action('woocommerce_after_shop_loop_item', 'list_prod_ids'); //for product listing pages
+			add_action('wp_footer','criteo_tracking_code'); //place the code in the footer
+		}
+
+	} endif;
+
+	// Add the integration to WooCommerce
+	function criteo_tags_for_wc_add_integration($integrations) {
+			global $woocommerce;
+
+			if (is_object($woocommerce)) {
+					include_once( 'includes/criteo-tags-for-wc-integration.php' );
+					$integrations[] = 'Criteo_Tags_Integration';
+					return $integrations;
 			}
-		}
-		/**
-		 * Add a new integration to WooCommerce.
-		 */
-		public function add_integration( $integrations ) {
-			$integrations[] = 'Criteo_Tags_Integration';
-			return $integrations;
-		}
+
 	}
+	add_filter('woocommerce_integrations', 'criteo_tags_for_wc_add_integration' );
+
 }
